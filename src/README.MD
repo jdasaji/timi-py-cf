@@ -5,7 +5,7 @@ Este repositorio implementa un flujo de integración y despliegue continuo (CI/C
 ## 📌 Flujo del CI/CD
 
 ### 1️⃣ CodePipeline detecta cambios en GitHub
-Cuando realizas un `git push`, AWS CodePipeline detecta el cambio en la rama `main` gracias a la configuración en `ci-cd.yml`.
+Cuando realizas un `git push`, AWS CodePipeline detecta el cambio en la rama `master` gracias a la configuración en `ci-cd.yml`.
 
 ### 2️⃣ Descarga del código desde GitHub
 📌 **Archivo:** `cloudformation/ci-cd.yml`
