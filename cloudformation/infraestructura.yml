@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+
+  # 🔹 Repositorio ECR para almacenar la imagen de Lambda
+  MyECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: my-lambda-repo
+
+  # 🔹 Rol de IAM para Lambda con permisos de Secrets Manager, S3 y logs
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaPermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "arn:aws:logs:*:*:*"
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchGetImage
+                  - ecr:GetDownloadUrlForLayer
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: "arn:aws:secretsmanager:us-east-1:*:secret:dev/py/test-file-*"
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource: "arn:aws:s3:::py-test--use1-az6--x-s3/*"
+
+  # 🔹 Función Lambda basada en imagen de ECR
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: MyECRLambda
+      Role: !GetAtt LambdaExecutionRole.Arn
+      PackageType: Image
+      Code:
+        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest"
+      Timeout: 15
+      MemorySize: 256
+
+  # 🔹 Regla de EventBridge para ejecutar Lambda cada 1 minuto
+  MyEventBridgeRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: MyLambdaSchedule
+      ScheduleExpression: "rate(1 minute)"
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt MyLambdaFunction.Arn
+          Id: "MyLambdaTarget"
+
+  # 🔹 Permiso para que EventBridge invoque Lambda
+  LambdaPermissionForEventBridge:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref MyLambdaFunction
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt MyEventBridgeRule.Arn
