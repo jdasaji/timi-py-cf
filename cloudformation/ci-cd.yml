@@ -104,7 +104,7 @@ Resources:
               Configuration:
                 Owner: jdasaji
                 Repo: timi-py-cf
-                Branch: main
+                Branch: master
                 OAuthToken: !Sub "{{env:GITHUB_TOKEN}}"  # ✅ Ahora se toma de CodeBuild
               OutputArtifacts:
                 - Name: SourceArtifact
