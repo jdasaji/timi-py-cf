@@ -55,7 +55,7 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       PackageType: Image
       Code:
-        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest"
+        ImageUri: !Sub "107340132840.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest"
       Timeout: 15
       MemorySize: 256
 
