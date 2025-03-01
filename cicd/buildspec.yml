@@ -11,7 +11,7 @@ phases:
     commands:
       - echo "Configurando variables de imagen"
       - REPOSITORY_URI=107340132840.dkr.ecr.us-east-1.amazonaws.com/mi-repo-ecr
-      - IMAGE_TAG=$(git rev-parse --short HEAD)  # Etiqueta la imagen con el hash del commit
+      - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION  # Etiqueta la imagen con el hash del commit
 
   build:
     commands:
