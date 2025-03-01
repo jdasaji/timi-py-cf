@@ -1,5 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Resources:
+ # 📌 Repositorio ECR para almacenar imágenes de los Lambdas
+  MyECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: mi-repo-ecr  # Cambia el nombre si lo deseas
+      ImageScanningConfiguration:
+        ScanOnPush: true  # Habilita escaneo de vulnerabilidades
   MyPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -46,7 +53,7 @@ Resources:
       ServiceRole: arn:aws:iam::107340132840:role/policy-custom-pipeline  # Asegúrate de que este rol tenga permisos para CodeBuild
       Source:
         Type: CODEPIPELINE
-        BuildSpec: "pipeline/buildspec.yml"  # Cambia esto si el archivo está en otro lugar
+        BuildSpec: "cicd/buildspec.yml"  # Cambia esto si el archivo está en otro lugar
       Artifacts:
         Type: CODEPIPELINE
       Environment:
