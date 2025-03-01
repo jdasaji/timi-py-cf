@@ -1,40 +1,13 @@
 version: 0.2
-
-env:
-  variables:
-    AWS_REGION: "us-east-1"
-    ECR_REPOSITORY: "my-lambda-repo"
-    LAMBDA_FUNCTION: "MyECRLambda"
-
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.9
+  pre_build:
     commands:
-      - echo "Instalando dependencias..."
-      - pip install -r src/requirements.txt -t src/  # ✅ Instala dependencias en src/
-
+      - pip install aws-cdk-lib
+      - pip install -r requirements.txt
   build:
     commands:
-      - echo "Cargando variables de entorno..."
-      - cp config/dev.env .env  # ✅ Copia el archivo de configuración
-      - export $(grep -v '^#' .env | xargs)  # ✅ Carga las variables en el entorno
-
-      - echo "Construyendo la imagen Docker..."
-      - docker build -t $ECR_REPOSITORY -f pipeline/Dockerfile .
-
-      - echo "Autenticando en Amazon ECR..."
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 107340132840.dkr.ecr.$AWS_REGION.amazonaws.com
-
-      - echo "Subiendo imagen a Amazon ECR..."
-      - docker tag $ECR_REPOSITORY:latest 107340132840.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
-      - docker push 107340132840.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
-
-      - echo "Actualizando Lambda con la nueva imagen..."
-      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION --image-uri 107340132840.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
-
-artifacts:
-  files:
-    - src/**
-    - pipeline/Dockerfile
-    - config/dev.env
+      - cdk synth
+      - cdk deploy --require-approval never

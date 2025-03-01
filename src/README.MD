@@ -1,3 +1,8 @@
+-- agregao politica para que use los secrects manager
+aws iam attach-role-policy --role-name policy-custom-pipeline \
+  --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
+
+
 # 🚀 CI/CD con AWS CodePipeline
 
 Este repositorio implementa un flujo de integración y despliegue continuo (CI/CD) en AWS utilizando CodePipeline, CodeBuild, ECR, Lambda y CloudFormation.
