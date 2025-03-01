@@ -2,7 +2,7 @@
 FROM public.ecr.aws/lambda/python:3.9
 
 # 🔹 Copiar dependencias e instalarlas en el contenedor
-COPY lambdas/lambda_handler/requeriments.txt .
+COPY lambdas/lambda_handler/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 🔹 Copiar el código fuente al contenedor
