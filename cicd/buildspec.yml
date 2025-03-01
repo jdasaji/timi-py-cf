@@ -9,13 +9,20 @@ phases:
 
   pre_build:
     commands:
-      - echo "lambda: lambda_handler"
+      - echo "Configurando variables de imagen"
       - REPOSITORY_URI=107340132840.dkr.ecr.us-east-1.amazonaws.com/mi-repo-ecr
       - IMAGE_TAG=$(git rev-parse --short HEAD)  # Etiqueta la imagen con el hash del commit
-      - docker build -t $REPOSITORY_URI:$IMAGE_TAG -f lambdas/lambda_handler/Dockerfile .
-      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
 
   build:
     commands:
+      - echo "Construyendo imagen Docker"
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG -f lambdas/lambda_handler/Dockerfile .
+      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:latest
+
+      - echo "Subiendo imagen a ECR"
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+
+      - echo "Ejecutando CDK"
       - cdk synth
       - cdk deploy --require-approval never
