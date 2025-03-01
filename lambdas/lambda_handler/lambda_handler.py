@@ -12,7 +12,7 @@ def get_secret():
     secret_name = "dev/py/test-file"
     region_name = "us-east-1"
 
-    # Crear el cliente de AWS Secrets Manager
+    # Crear  el cliente de AWS Secrets Manager
     session = boto3.session.Session()
     client = session.client(
         service_name='secretsmanager',
