@@ -1,4 +1,5 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
@@ -23,6 +24,15 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
 
-      - echo "Ejecutando CDK"
-      - cdk synth
-      - cdk deploy --require-approval never
+      - echo "Creando o actualizando Lambda usando la imagen Docker desde ECR"
+      - |
+        aws lambda get-function --function-name mi-lambda-function || \
+        aws lambda create-function \
+          --function-name mi-lambda-function \
+          --package-type Image \
+          --code ImageUri=$REPOSITORY_URI:$IMAGE_TAG \
+          --role arn:aws:iam::107340132840:role/rol-for-py-pipe  # Asegúrate de tener el ARN correcto para el rol de Lambda
+          
+  post_build:
+    commands:
+      - echo "Proceso completado, la Lambda se ha actualizado o creado con la nueva imagen."
