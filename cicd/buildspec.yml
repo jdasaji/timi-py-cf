@@ -32,7 +32,7 @@ phases:
           --package-type Image \
           --code ImageUri=$REPOSITORY_URI:$IMAGE_TAG \
           --role arn:aws:iam::107340132840:role/rol-for-py-pipe \ # Asegúrate de tener el ARN correcto para el rol de Lambda
-          --timeout 60  # Aumenta el timeout a 60 segundos
+          --timeout 20  # Aumenta el timeout a 60 segundos
 
   post_build:
     commands:
