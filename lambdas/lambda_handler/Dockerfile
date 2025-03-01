@@ -6,7 +6,7 @@ COPY lambdas/lambda_handler/requeriments.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 🔹 Copiar el código fuente al contenedor
-COPY lambdas/lambda_handler/src/ /var/task/
+COPY lambdas/lambda_handler/ /var/task/
 
 # 🔹 Especificar el handler de la función Lambda
 CMD ["lambda_handler.lambda_handler"]
