@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Resources:
  # 📌 Repositorio ECR para almacenar imágenes de los Lambdas
+#    aws cloudformation create-stack --stack-name MiPipelineStack --template-body file://cloudformation/infraestructura.yml --capabilities CAPABILITY_NAMED_IAM   --capabilities CAPABILITY_NAMED_IAM  --region us-east-1
   MyECRRepository:
     Type: AWS::ECR::Repository
     Properties:
