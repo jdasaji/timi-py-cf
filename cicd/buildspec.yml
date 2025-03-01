@@ -24,6 +24,7 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - docker push $REPOSITORY_URI:latest
 
+#Asegúrate de tener el ARN correcto para el rol de Lambda :> arn:aws:iam::107340132840:role/rol-for-py-pipe para que funcion mi lambda
       - echo "Creando o actualizando Lambda usando la imagen Docker desde ECR"
       - |
         aws lambda get-function --function-name mi-lambda-function || \
@@ -31,7 +32,7 @@ phases:
           --function-name mi-lambda-function \
           --package-type Image \
           --code ImageUri=$REPOSITORY_URI:$IMAGE_TAG \
-          --role arn:aws:iam::107340132840:role/rol-for-py-pipe \ # Asegúrate de tener el ARN correcto para el rol de Lambda
+          --role arn:aws:iam::107340132840:role/rol-for-py-pipe \
           --timeout 20  # Aumenta el timeout a 60 segundos
 
   post_build:
